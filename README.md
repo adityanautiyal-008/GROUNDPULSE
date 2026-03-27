@@ -160,7 +160,8 @@ Install the following using **Arduino Library Manager**:
 *   **Aman Payal**
 *   **Ayush Panwar**
 *   **Aditya Shah**
-*   Team **GroundPulse**
+
+    ~~Team **GroundPulse**
 
 
 ***
