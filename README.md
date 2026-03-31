@@ -161,7 +161,7 @@ Install the following using **Arduino Library Manager**:
 *   **Ayush Panwar**
 *   **Aditya Shah**
 
-    ~~Team **GroundPulse**
+    ~~Team **Maverics.exe**
 
 
 ***
