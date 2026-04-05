@@ -1,14 +1,121 @@
 /*
- * ╔══════════════════════════════════════════════════════════════╗
- *   GroundPulse — MAIN CONTROLLER (Field Unit)
- *   ESP32 DevKit V1
- * ╚══════════════════════════════════════════════════════════════╝
- *
- * CORE PRINCIPLE:
- *  - Piezo-based seismic bio-vibration detection (PRIMARY)
- *  - Conditional acoustic confirmation (tapping / response)
- *
- */
+╔══════════════════════════════════════════════════════════════╗
+║                GroundPulse — MAIN CONTROLLER                 ║
+║        Subsurface Human Presence Detection System            ║
+║              (Single-Box Field Unit)                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+OVERVIEW
+────────────────────────────────────────────────────────────────
+GroundPulse is an ESP32-based seismic life-detection system designed
+to identify high-probability human presence beneath debris after
+earthquakes and structural collapses.
+
+This controller performs real-time **biomechanical vibration
+analysis** using ground-coupled piezo sensors and optionally
+confirms intentional human response using a microphone.
+
+The system is designed to work where cameras, microphones alone,
+thermal imaging, and gas sensors fail.
+
+NO CAMERA | NO CO₂ | NO INTERNET DEPENDENCY
+
+────────────────────────────────────────────────────────────────
+WHAT THIS FIRMWARE DOES
+────────────────────────────────────────────────────────────────
+1. Samples ground vibrations via Piezo + LM358 amplifier
+2. Performs low-frequency FFT (0.1–5 Hz) to detect:
+   - Breathing-induced motion
+   - Cardiovascular micro-vibrations
+3. Detects short-duration acoustic events (tapping/response)
+   using an analog microphone (conditional use)
+4. Computes a Human Presence Confidence Score (0–100%)
+5. Displays live system status on OLED
+6. Sends detection packets over LoRa (long-range, no internet)
+7. Handles battery monitoring from 18650 Li-ion cell
+8. Uses FreeRTOS dual-core task separation
+9. Uses watchdog protection for field reliability
+
+────────────────────────────────────────────────────────────────
+SENSING STRATEGY (IMPORTANT)
+────────────────────────────────────────────────────────────────
+PRIMARY SENSOR:
+✔ Piezoelectric vibration sensor (always active)
+  - Detects mechanical bio-signatures that propagate through rubble
+
+SECONDARY SENSOR:
+✔ Microphone (event-based, NOT continuous)
+  - Used only to detect intentional sounds (tapping, response)
+  - Never allowed to trigger detection alone
+
+This mirrors real professional rescue protocols.
+
+────────────────────────────────────────────────────────────────
+PIN CONNECTIONS
+────────────────────────────────────────────────────────────────
+Piezo + LM358 OUT     → GPIO34   (ADC1_CH6)
+Microphone OUT       → GPIO32   (ADC1_CH4)
+Battery Divider      → GPIO35   (ADC1_CH7)
+Alert LED            → GPIO4
+Buzzer               → GPIO13
+
+OLED SDA             → GPIO21   (I²C)
+OLED SCL             → GPIO22   (I²C)
+
+LoRa SCK             → GPIO18
+LoRa MISO            → GPIO19
+LoRa MOSI            → GPIO23
+LoRa CS / NSS        → GPIO5
+LoRa RST             → GPIO14
+LoRa DIO0            → GPIO2
+
+Battery divider: 100kΩ + 100kΩ from BAT+ to GND
+
+────────────────────────────────────────────────────────────────
+LORA PACKET FORMAT
+────────────────────────────────────────────────────────────────
+GP,<score>,<freq>,<seismic>,<acoustic>,<human>,<battery>,<packetID>
+
+Example:
+GP,74,1.18,0.036,1,1,81,146
+
+Field meanings:
+- score     : Human Presence Confidence (0–100%)
+- freq      : Dominant biological frequency (Hz)
+- seismic   : Seismic energy / prominence
+- acoustic  : 1 = acoustic response detected, 0 = none
+- human     : 1 = strong human signature, 0 = no
+- battery   : Battery percentage
+- packetID : Packet counter
+
+────────────────────────────────────────────────────────────────
+LIBRARIES REQUIRED (Arduino Library Manager)
+────────────────────────────────────────────────────────────────
+• arduinoFFT          by Enrique Condes
+• LoRa                by Sandeep Mistry
+• Adafruit GFX        by Adafruit
+• Adafruit SSD1306    by Adafruit
+
+────────────────────────────────────────────────────────────────
+HARDWARE PLATFORM
+────────────────────────────────────────────────────────────────
+• ESP32 DevKit V1 (ESP32-WROOM-32)
+• Piezo disc + LM358 amplifier
+• Analog microphone module (e.g., MAX9814)
+• SX1278 LoRa module (433 MHz)
+• SSD1306 OLED display
+• 18650 Li-ion battery (solar-charge capable)
+
+────────────────────────────────────────────────────────────────
+PROJECT STATUS
+────────────────────────────────────────────────────────────────
+✔ Seismic-first detection
+✔ Mic-safe integration
+✔ No gas or vision dependency
+✔ Field-realistic and defensible design
+
+────────────────────────────────────────────────────────────────
+*/
 
 #include <Arduino.h>
 #include <Wire.h>
