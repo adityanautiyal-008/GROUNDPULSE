@@ -1,11 +1,11 @@
 """
 ╔══════════════════════════════════════════════════════════════╗
-║   GroundPulse — Live Dashboard                              ║
-║   LoRa Base Station Visualization                           ║
+║   GroundPulse — Live Dashboard                               ║
+║   LoRa Base Station Visualization                            ║
 ╚══════════════════════════════════════════════════════════════╝
 
 Reads serial data from ESP32 LoRa receiver and displays
-live confidence tracking of human detection.
+live confidence tracking of subsurface human detection.
 """
 
 import serial
@@ -16,9 +16,9 @@ from collections import deque
 # ─────────────────────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────────────────────
-SERIAL_PORT = "COM5"        # Change to your port (Linux: /dev/ttyUSB0)
+SERIAL_PORT = "COM5"        # Change as needed (Linux: /dev/ttyUSB0)
 BAUD_RATE   = 115200
-MAX_POINTS  = 100           # Points on graph
+MAX_POINTS  = 100           # Points shown on graph
 
 # ─────────────────────────────────────────────────────────────
 # SERIAL INIT
@@ -46,34 +46,34 @@ plt.ion()
 fig, ax = plt.subplots()
 line, = ax.plot([], [], linewidth=2)
 
-ax.set_title("GroundPulse — Human Detection Confidence")
+ax.set_title("GroundPulse — Human Presence Confidence")
 ax.set_xlabel("Time (s)")
 ax.set_ylabel("Confidence (%)")
 ax.set_ylim(0, 100)
 ax.grid(True)
 
 # ─────────────────────────────────────────────────────────────
-# PARSER
+# PACKET PARSER
 # ─────────────────────────────────────────────────────────────
 def parse_packet(line):
     """
     Expected format:
-    GP,<score>,<freq>,<co2>,<accel>,<human>,<battery>,<packetID>
+    GP,<score>,<freq>,<seismic>,<acoustic>,<human>,<battery>,<packetID>
     """
     try:
         parts = line.strip().split(",")
 
-        if parts[0] != "GP":
+        if parts[0] != "GP" or len(parts) != 8:
             return None
 
         return {
-            "score":   float(parts[1]),
-            "freq":    float(parts[2]),
-            "co2":     int(parts[3]),
-            "accel":   float(parts[4]),
-            "human":   int(parts[5]),
-            "battery": int(parts[6]),
-            "packet":  int(parts[7])
+            "score":     float(parts[1]),
+            "freq":      float(parts[2]),
+            "seismic":   float(parts[3]),
+            "acoustic":  int(parts[4]),
+            "human":     int(parts[5]),
+            "battery":   int(parts[6]),
+            "packet":    int(parts[7])
         }
     except:
         return None
@@ -103,14 +103,15 @@ while True:
         print(
             f"[{data['packet']:04d}] "
             f"Score:{data['score']:3.0f}% | "
-            f"Hz:{data['freq']:.2f} | "
-            f"CO2:+{data['co2']}ppm | "
+            f"Freq:{data['freq']:.2f}Hz | "
+            f"Seismic:{data['seismic']:.4f} | "
+            f"Acoustic:{'YES' if data['acoustic'] else 'NO'} | "
             f"Bat:{data['battery']}% | "
             f"{'HUMAN' if data['human'] else '----'}"
         )
 
         if data["human"]:
-            print(">>> HUMAN DETECTED <<<")
+            print(">>> HIGH PROBABILITY HUMAN PRESENCE <<<")
 
         # Update plot
         line.set_data(time_data, confidence_data)
