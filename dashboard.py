@@ -1,12 +1,12 @@
-"""
-╔══════════════════════════════════════════════════════════════╗
-║   GroundPulse — Live Dashboard                               ║
-║   LoRa Base Station Visualization                            ║
-╚══════════════════════════════════════════════════════════════╝
+# """
+# ╔══════════════════════════════════════════════════════════════╗
+# ║   GroundPulse — Live Dashboard                               ║
+# ║   LoRa Base Station Visualization                            ║
+# ╚══════════════════════════════════════════════════════════════╝
 
-Reads serial data from ESP32 LoRa receiver and displays
-live confidence tracking of subsurface human detection.
-"""
+# Reads serial data from ESP32 LoRa receiver and displays
+# live confidence tracking of subsurface human detection.
+# """
 
 import serial
 import time
