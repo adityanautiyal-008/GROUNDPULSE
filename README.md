@@ -124,6 +124,7 @@ The ESP32 streams one JSON object per line:
   "status": true,
   "confidence": 78.5
 }
+```
 
 📌 Project Status
 ✅ Hardware architecture finalized
