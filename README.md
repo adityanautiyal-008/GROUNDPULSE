@@ -126,29 +126,44 @@ The ESP32 streams one JSON object per line:
 }
 ```
 
-📌 Project Status
-✅ Hardware architecture finalized
-✅ Signal fusion implemented
-✅ Dashboard integration complete
-✅ Field‑ready prototype
-✅ Viva‑defensible design
+📌 Project Status-
+
+  ✅ Hardware architecture finalized
+  
+  ✅ Signal fusion implemented
+  
+  ✅ Dashboard integration complete
+  
+  ✅ Field‑ready prototype
+  
+  ✅ Viva‑defensible design
+
 
 🎯 Future Improvements
+    
+    ~Directional ground coupling
 
-Directional ground coupling
-Adaptive thresholding
-Multi‑node LoRa mesh
-Geophone integration
-Field casing & ruggedization
+    ~Adaptive thresholding
+    
+    ~Multi‑node LoRa mesh
+    
+    ~Geophone integration
+    
+    ~Field casing & ruggedization
 
 
-👨‍💻 Authors
-Team Maverics.exe
 
-Aditya Nautiyal
-Aman Payal
-Ayush Panwar
-Aditya Shah
+👨‍💻 Authors:-
+
+(Team Maverics.exe)
+
+_Aditya Nautiyal_
+
+_Aman Payal_
+
+_Ayush Panwar_
+
+_Aditya Shah_
 
 
 “Designed to listen where eyes cannot see.”
